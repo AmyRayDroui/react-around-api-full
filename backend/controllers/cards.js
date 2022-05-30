@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 
 const INVALID_DATA_ERROR = 400;
+const UNAUTHORIZED_USER = 403;
 const DATA_NOT_FOUND_ERROR = 404;
 const DEFAULT_SERVER_ERROR = 500;
 
@@ -31,10 +32,14 @@ const createCard = async (req, res) => {
 
 const deleteCard = async (req, res) => {
   try {
-    const card = await Card.findByIdAndRemove(req.params.id);
-    if (card === null) {
-      return res.status(DATA_NOT_FOUND_ERROR).send('Card not found');
+    searchCard = await Card.findById(req.params.id);
+    if (searchCard === null) {
+      return res.status(DATA_NOT_FOUND_ERROR).send({ message:'Card not found' });
     }
+    if (req.user._id !== searchCard.owner.toHexString()) {
+      return res.status(UNAUTHORIZED_USER).send({ message: 'Not the owner of the card' });
+    }
+    const card = await Card.findByIdAndRemove(req.params.id);
     return res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {

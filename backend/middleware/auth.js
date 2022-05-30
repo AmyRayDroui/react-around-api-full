@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return res
-      .status(401)
+      .status(403)
       .send({ message: 'Authorization Required' });
   }
 

@@ -31,13 +31,6 @@ app.post('/signin', login);
 
 app.use(auth);
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '62645d1bbe77bd89503983ae',
-  };
-
-  next();
-});
 app.use('/cards', cardsRoute);
 app.use('/users', usersRoute);
 app.get('/:extra', (req, res) => {
