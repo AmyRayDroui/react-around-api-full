@@ -8,8 +8,9 @@ node_modules
 
 # Optional npm cache directory
 .npm
+.env
 
 # System files and IDE settings folders
 .DS_Store
 .idea
-.vscode 
+.vscode

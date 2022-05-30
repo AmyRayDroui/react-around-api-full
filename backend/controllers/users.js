@@ -1,4 +1,8 @@
+require('dotenv').config();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const INVALID_DATA_ERROR = 400;
 const DATA_NOT_FOUND_ERROR = 404;
@@ -30,12 +34,15 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const { name, about, avatar } = req.body;
-    const user = await User.create({ name, about, avatar });
+    const { name, about, avatar, email, password } = req.body;
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({ name: name, about: about, avatar: avatar, email: email , password: hash });
     res.send(user);
   } catch (err) {
     if (err.name === 'TypeError') {
       res.status(INVALID_DATA_ERROR).send('invalid data passed to the methods for creating a user');
+    } if (err.name === 'MongoServerError') {
+      res.status(INVALID_DATA_ERROR).send({ message: 'This email is already registered in the program' });
     } else {
       res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
     }
@@ -80,10 +87,27 @@ const updateUserAvatar = async (req, res) => {
   }
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+
+      res.send({ token });
+    })
+    .catch((err) => {
+      res
+        .status(401)
+        .send({ message: err.message });
+    });
+}
+
 module.exports = {
+  createUser,
+  login,
   getUsers,
   getUserById,
-  createUser,
   updateUserProfile,
   updateUserAvatar,
 };

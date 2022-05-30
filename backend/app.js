@@ -2,6 +2,10 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const {celebrate, Joi} = require('celebrate');
+
+const { createUser, login } = require('./controllers/users');
+const auth = require('./middleware/auth');
 
 const cardsRoute = require('./routes/cards');
 const usersRoute = require('./routes/users');
@@ -13,6 +17,19 @@ mongoose.connect('mongodb://localhost:27017/aroundb');
 
 app.use(helmet());
 app.use(bodyParser.json());
+
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2),
+    avatar: Joi.string().min(2),
+    email: Joi.string().required().min(2),
+    password: Joi.string().required().min(2),
+  }),
+}),createUser);
+app.post('/signin', login);
+
+app.use(auth);
 
 app.use((req, res, next) => {
   req.user = {
