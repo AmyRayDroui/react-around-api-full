@@ -1,21 +1,19 @@
 const Card = require('../models/card');
+const InvalidDataError = require('../errors/invalid-data-err');
+const NotAuthorizedError = require('../errors/not-authorized-err');
+const NotFoundError = require('../errors/not-found-err');
 
-const INVALID_DATA_ERROR = 400;
-const UNAUTHORIZED_USER = 403;
-const DATA_NOT_FOUND_ERROR = 404;
-const DEFAULT_SERVER_ERROR = 500;
-
-const getCards = async (req, res) => {
+const getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({})
       .populate('owner');
     res.send(cards);
   } catch (err) {
-    res.status(DEFAULT_SERVER_ERROR).send({ message: 'Server Error' });
+    next(new Error('Server Error'));
   }
 };
 
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
     const owner = req.user._id;
@@ -23,33 +21,33 @@ const createCard = async (req, res) => {
     res.send(card);
   } catch (err) {
     if (err.name === 'TypeError') {
-      res.status(INVALID_DATA_ERROR).send('invalid data passed to the methods for creating a card');
+      next(new InvalidDataError('invalid data passed to the methods for creating a card'));
     } else {
-      res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
+      next(new Error('Server Error'));
     }
   }
 };
 
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   try {
-    searchCard = await Card.findById(req.params.id);
+    const searchCard = await Card.findById(req.params.id);
     if (searchCard === null) {
-      return res.status(DATA_NOT_FOUND_ERROR).send({ message:'Card not found' });
+      next(new NotFoundError('Card not found'));
     }
     if (req.user._id !== searchCard.owner.toHexString()) {
-      return res.status(UNAUTHORIZED_USER).send({ message: 'Not the owner of the card' });
+      next(new NotAuthorizedError('Not the owner of the card'));
     }
     const card = await Card.findByIdAndRemove(req.params.id);
     return res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(INVALID_DATA_ERROR).send({ message: 'invalid card' });
+      next(new InvalidDataError('invalid card'));
     }
-    return res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
+    next(new Error('Server Error'));
   }
 };
 
-const likeCard = async (req, res) => {
+const likeCard = async (req, res, next) => {
   try {
     const card = await Card.findByIdAndUpdate(
       req.params.id,
@@ -57,18 +55,18 @@ const likeCard = async (req, res) => {
       { new: true },
     );
     if (card === null) {
-      return res.status(DATA_NOT_FOUND_ERROR).send('Card not found');
+      next(new NotFoundError('Card not found'));
     }
     return res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(INVALID_DATA_ERROR).send({ message: 'invalid card' });
+      next(new InvalidDataError('invalid card'));
     }
-    return res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
+    next(new Error('Server Error'));
   }
 };
 
-const dislikeCard = async (req, res) => {
+const dislikeCard = async (req, res, next) => {
   try {
     const card = await Card.findByIdAndUpdate(
       req.params.id,
@@ -76,14 +74,14 @@ const dislikeCard = async (req, res) => {
       { new: true },
     );
     if (card === null) {
-      return res.status(DATA_NOT_FOUND_ERROR).send('Card not found');
+      next(new NotFoundError('Card not found'));
     }
     return res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(INVALID_DATA_ERROR).send({ message: 'invalid card' });
+      next(new InvalidDataError('invalid card'));
     }
-    return res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
+    next(new Error('Server Error'));
   }
 };
 

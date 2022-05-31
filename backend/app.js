@@ -2,8 +2,9 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const {celebrate, Joi} = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 
+const { requestLogger, errorLogger } = require('./middleware/logger');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middleware/auth');
 
@@ -17,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/aroundb');
 
 app.use(helmet());
 app.use(bodyParser.json());
+app.use(requestLogger);
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -26,7 +28,7 @@ app.post('/signup', celebrate({
     email: Joi.string().required().min(2),
     password: Joi.string().required().min(2),
   }),
-}),createUser);
+}), createUser);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().min(2),
@@ -42,6 +44,19 @@ app.get('/:extra', (req, res) => {
   res.status(404);
   res.setHeader('Content-Type', 'application/json');
   res.send({ message: 'Requested resource not found' });
+});
+
+app.use(errorLogger);
+app.use(errors());
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'An error occurred on the server'
+        : message
+    });
 });
 
 app.listen(PORT, () => {

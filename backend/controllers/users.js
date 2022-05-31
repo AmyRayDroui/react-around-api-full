@@ -2,54 +2,59 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { NODE_ENV, JWT_SECRET } = process.env;
 
-const INVALID_DATA_ERROR = 400;
-const DATA_NOT_FOUND_ERROR = 404;
-const DEFAULT_SERVER_ERROR = 500;
+const InvalidDataError = require('../errors/invalid-data-err');
+const NotAuthorizedError = require('../errors/not-authorized-err');
+const NotFoundError = require('../errors/not-found-err');
 
-const getUsers = async (req, res) => {
+const { JWT_SECRET } = process.env;
+
+const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
     res.send(users);
   } catch (err) {
-    res.status(DEFAULT_SERVER_ERROR).send({ message: 'Server Error' });
+    next(new Error('Server Error'));
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
     if (user === null) {
-      return res.status(DATA_NOT_FOUND_ERROR).send('user not found');
+      next(new NotFoundError('User not found'));
     }
     return res.send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(INVALID_DATA_ERROR).send({ message: 'invalid user id' });
+      next(new InvalidDataError('invalid user id'));
     }
-    return res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
+    next(new Error('Server Error'));
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
-    const { name, about, avatar, email, password } = req.body;
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
     const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({ name: name, about: about, avatar: avatar, email: email , password: hash });
+    const user = await User.create({
+      name, about, avatar, email, password: hash,
+    });
     res.send(user);
   } catch (err) {
     if (err.name === 'TypeError') {
-      res.status(INVALID_DATA_ERROR).send('invalid data passed to the methods for creating a user');
+      next(new InvalidDataError('invalid data passed to the methods for creating a user'));
     } if (err.name === 'MongoServerError') {
-      res.status(INVALID_DATA_ERROR).send({ message: 'This email is already registered in the program' });
+      next(new InvalidDataError('This email is already registered in the program'));
     } else {
-      res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
+      next(new Error('Server Error'));
     }
   }
 };
 
-const updateUserProfile = async (req, res) => {
+const updateUserProfile = async (req, res, next) => {
   try {
     const owner = req.user._id;
     const { name, about } = req.body;
@@ -61,14 +66,14 @@ const updateUserProfile = async (req, res) => {
     res.send(user);
   } catch (err) {
     if (err.name === 'TypeError') {
-      res.status(INVALID_DATA_ERROR).send('invalid data passed to the methods for creating a user');
+      next(new InvalidDataError('invalid data passed to the methods for creating a user'));
     } else {
-      res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
+      next(new Error('Server Error'));
     }
   }
 };
 
-const updateUserAvatar = async (req, res) => {
+const updateUserAvatar = async (req, res, next) => {
   try {
     const owner = req.user._id;
     const { avatar } = req.body;
@@ -80,14 +85,14 @@ const updateUserAvatar = async (req, res) => {
     res.send(user);
   } catch (err) {
     if (err.name === 'TypeError') {
-      res.status(INVALID_DATA_ERROR).send('invalid data passed to the methods for creating a user');
+      next(new InvalidDataError('invalid data passed to the methods for creating a user'));
     } else {
-      res.status(DEFAULT_SERVER_ERROR).send({ message: 'Error' });
+      next(new Error('Server Error'));
     }
   }
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -97,11 +102,9 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
+      next(new NotAuthorizedError(err.message));
     });
-}
+};
 
 module.exports = {
   createUser,
