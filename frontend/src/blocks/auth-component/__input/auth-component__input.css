@@ -1,0 +1,27 @@
+.auth-component__input {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.21;
+    padding-bottom: 13px;
+    margin-top: 30px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #ccc;
+}
+
+.auth-component__input::placeholder {
+    font-weight: 400;
+    color: #ccc;
+    opacity: 1;
+}
+
+.auth-component__input:-ms-input-placeholder {
+    font-weight: 400;
+    color: #ccc;
+}
+  
+.auth-component__input::-ms-input-placeholder {
+    font-weight: 400;
+    color: #ccc;
+}

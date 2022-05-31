@@ -1,0 +1,5 @@
+.image-card__name-container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}

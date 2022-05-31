@@ -1,0 +1,12 @@
+.header__nav-link {
+    color: white;
+    background-color: black;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.22;
+    margin:0;
+    margin-left: 24px;
+    text-decoration: none;
+    border: none;
+    padding: 0;
+}

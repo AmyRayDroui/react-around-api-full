@@ -1,0 +1,15 @@
+.profile__image-overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: black;
+  background-image: url(../../../images/icons/pencil_icon.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 26px;
+  border: none;
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
+}

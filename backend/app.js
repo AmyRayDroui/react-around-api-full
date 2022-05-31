@@ -27,7 +27,12 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(2),
   }),
 }),createUser);
-app.post('/signin', login);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().min(2),
+    password: Joi.string().required().min(2),
+  }),
+}), login);
 
 app.use(auth);
 

@@ -1,0 +1,15 @@
+.image-card__love-button {
+  min-height: 19px;
+  min-width: 21px;
+  background-image: url(../../../images/icons/heart_icon.svg);
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: hidden;
+  transition: opacity .3s ease-in-out;
+}
+
+.image-card__love-button:hover {
+  opacity: .5;
+  cursor: pointer;
+}

@@ -1,0 +1,18 @@
+.profile__image-container {
+  position: relative;
+  max-width: 120px;
+  max-height: 120px;
+  grid-area: image;
+  margin-right: 30px;
+}
+
+.profile__image-container:hover .profile__image-overlay {
+  opacity: .8;
+}
+
+
+@media screen and (max-width:650px){
+  .profile__image-container {
+    margin: 0 0 30px;
+  }
+}

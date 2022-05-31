@@ -8,7 +8,12 @@ const {
 } = require('../controllers/cards');
 
 router.get('/', getCards);
-router.post('/', createCard);
+router.post('/', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    link: Joi.string().min(2),
+  }),
+}), createCard);
 router.delete('/:id', deleteCard);
 router.put('/:id/likes', likeCard);
 router.delete('/:id/likes', dislikeCard);
