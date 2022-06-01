@@ -20,7 +20,7 @@ const getUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.user._id);
     if (user === null) {
       next(new NotFoundError('User not found'));
     }

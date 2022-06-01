@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/around-react/static/css/main.a3da4635.css",
+    "main.js": "/around-react/static/js/main.4a38f69e.js",
+    "static/js/787.1c78f32b.chunk.js": "/around-react/static/js/787.1c78f32b.chunk.js",
+    "static/media/Inter-Medium.woff": "/around-react/static/media/Inter-Medium.9053572c46aeb4b16caa.woff",
+    "static/media/Inter-Black.woff": "/around-react/static/media/Inter-Black.c6938660eec019fefd68.woff",
+    "static/media/Inter-Regular.woff": "/around-react/static/media/Inter-Regular.8c206db99195777c6769.woff",
+    "static/media/Inter-Medium.woff2": "/around-react/static/media/Inter-Medium.293fd13dbca5a3e450ef.woff2",
+    "static/media/Inter-Black.woff2": "/around-react/static/media/Inter-Black.15ca31c0a2a68f76d2d1.woff2",
+    "static/media/Inter-Regular.woff2": "/around-react/static/media/Inter-Regular.c8ba52b05a9ef10f4758.woff2",
+    "static/media/page_logo.svg": "/around-react/static/media/page_logo.9aab8d2d37f3db68d78ceedf48be5b0a.svg",
+    "index.html": "/around-react/index.html",
+    "static/media/denied_icon.svg": "/around-react/static/media/denied_icon.df8eddf661ff88f2d0efd3d570d14309.svg",
+    "static/media/success_icon.svg": "/around-react/static/media/success_icon.1b6082f862eac35e2514460237d96ecc.svg",
+    "static/media/bin_icon.svg": "/around-react/static/media/bin_icon.4dd875ab8cd5b4309e9e.svg",
+    "static/media/heart_icon.svg": "/around-react/static/media/heart_icon.6cc1fdcde870a8bdd13a.svg",
+    "static/media/full_heart_icon.svg": "/around-react/static/media/full_heart_icon.0101ffd4acf5f9fe5006.svg",
+    "static/media/close_icon.svg": "/around-react/static/media/close_icon.abb6100140a17dd39e6e.svg",
+    "static/media/pencil_icon.svg": "/around-react/static/media/pencil_icon.bcb6d6e37f005dbd5497.svg",
+    "static/media/plus_icon.svg": "/around-react/static/media/plus_icon.6a603a8bf697511f22ab.svg",
+    "main.a3da4635.css.map": "/around-react/static/css/main.a3da4635.css.map",
+    "main.4a38f69e.js.map": "/around-react/static/js/main.4a38f69e.js.map",
+    "787.1c78f32b.chunk.js.map": "/around-react/static/js/787.1c78f32b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a3da4635.css",
+    "static/js/main.4a38f69e.js"
+  ]
+}

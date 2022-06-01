@@ -2,10 +2,11 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
-const { createUser, login } = require('./controllers/users');
+const { createUser, login, getUserById } = require('./controllers/users');
 const auth = require('./middleware/auth');
 
 const cardsRoute = require('./routes/cards');
@@ -15,6 +16,7 @@ const { PORT = 3000 } = process.env;
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
+app.use(cors());
 
 app.use(helmet());
 app.use(bodyParser.json());
@@ -35,6 +37,7 @@ app.post('/signin', celebrate({
     password: Joi.string().required().min(2),
   }),
 }), login);
+//app.get('/users/me', getUserById)
 
 app.use(auth);
 
