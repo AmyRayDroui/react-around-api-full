@@ -16,10 +16,11 @@ const { PORT = 3000 } = process.env;
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
-app.use(cors());
 
 app.use(helmet());
 app.use(bodyParser.json());
+app.use(cors());
+app.options('*', cors());
 app.use(requestLogger);
 
 app.post('/signup', celebrate({
