@@ -18,9 +18,21 @@ const getUsers = async (req, res, next) => {
   }
 };
 
-const getUserById = async (req, res, next) => {
+const getCurrUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
+    res.status(200).send(user);
+  } catch (error) {
+    if (error.name === 'CastError') {
+      next(new InvalidDataError('wrong data'));
+    }
+    next(new Error('Server Error'));
+  }
+}
+
+const getUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
     if (user === null) {
       next(new NotFoundError('User not found'));
     }
@@ -113,4 +125,5 @@ module.exports = {
   getUserById,
   updateUserProfile,
   updateUserAvatar,
+  getCurrUser,
 };

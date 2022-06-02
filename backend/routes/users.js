@@ -9,10 +9,12 @@ const {
   getUserById,
   updateUserProfile,
   updateUserAvatar,
+  getCurrUser,
 } = require('../controllers/users');
 
 router.get('/', getUsers);
-router.get('/me', getUserById);
+router.get('/me', getCurrUser);
+router.get('/:id', getUserById);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
