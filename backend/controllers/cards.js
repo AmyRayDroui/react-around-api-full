@@ -38,7 +38,7 @@ const deleteCard = async (req, res, next) => {
       next(new NotAuthorizedError('Not the owner of the card'));
     }
     const card = await Card.findByIdAndRemove(req.params.id);
-    return res.send(card);
+    res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
       next(new InvalidDataError('invalid card'));
@@ -57,7 +57,7 @@ const likeCard = async (req, res, next) => {
     if (card === null) {
       next(new NotFoundError('Card not found'));
     }
-    return res.send(card);
+    res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
       next(new InvalidDataError('invalid card'));
@@ -76,7 +76,7 @@ const dislikeCard = async (req, res, next) => {
     if (card === null) {
       next(new NotFoundError('Card not found'));
     }
-    return res.send(card);
+    res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
       next(new InvalidDataError('invalid card'));

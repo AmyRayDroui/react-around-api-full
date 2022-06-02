@@ -9,7 +9,7 @@ const NotFoundError = require('../errors/not-found-err');
 
 const { JWT_SECRET } = process.env;
 
-const getUsers = async (req, res, next) => {
+module.exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
     res.send(users);
@@ -18,7 +18,7 @@ const getUsers = async (req, res, next) => {
   }
 };
 
-const getCurrUser = async (req, res, next) => {
+module.exports.getCurrUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
     res.status(200).send(user);
@@ -28,15 +28,15 @@ const getCurrUser = async (req, res, next) => {
     }
     next(new Error('Server Error'));
   }
-}
+};
 
-const getUserById = async (req, res, next) => {
+module.exports.getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
     if (user === null) {
       next(new NotFoundError('User not found'));
     }
-    return res.send(user);
+    res.send(user);
   } catch (err) {
     if (err.name === 'CastError') {
       next(new InvalidDataError('invalid user id'));
@@ -45,7 +45,7 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-const createUser = async (req, res, next) => {
+module.exports.createUser = async (req, res, next) => {
   try {
     const {
       name, about, avatar, email, password,
@@ -66,7 +66,7 @@ const createUser = async (req, res, next) => {
   }
 };
 
-const updateUserProfile = async (req, res, next) => {
+module.exports.updateUserProfile = async (req, res, next) => {
   try {
     const owner = req.user._id;
     const { name, about } = req.body;
@@ -85,7 +85,7 @@ const updateUserProfile = async (req, res, next) => {
   }
 };
 
-const updateUserAvatar = async (req, res, next) => {
+module.exports.updateUserAvatar = async (req, res, next) => {
   try {
     const owner = req.user._id;
     const { avatar } = req.body;
@@ -104,26 +104,15 @@ const updateUserAvatar = async (req, res, next) => {
   }
 };
 
-const login = (req, res, next) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-
       res.send({ token });
     })
     .catch((err) => {
       next(new NotAuthorizedError(err.message));
     });
-};
-
-module.exports = {
-  createUser,
-  login,
-  getUsers,
-  getUserById,
-  updateUserProfile,
-  updateUserAvatar,
-  getCurrUser,
 };

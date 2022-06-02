@@ -3,8 +3,6 @@ const { celebrate, Joi } = require('celebrate');
 const validateUrl = require('../validators/validateUrl');
 
 const {
-  createUser,
-  login,
   getUsers,
   getUserById,
   updateUserProfile,

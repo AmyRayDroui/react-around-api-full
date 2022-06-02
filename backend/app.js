@@ -6,7 +6,7 @@ const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
-const { createUser, login, getUserById } = require('./controllers/users');
+const { createUser, login } = require('./controllers/users');
 const auth = require('./middleware/auth');
 
 const cardsRoute = require('./routes/cards');
@@ -43,7 +43,6 @@ app.post('/signin', celebrate({
     password: Joi.string().required().min(2),
   }),
 }), login);
-//app.get('/users/me', getUserById)
 
 app.use(auth);
 
@@ -64,7 +63,7 @@ app.use((err, req, res, next) => {
     .send({
       message: statusCode === 500
         ? 'An error occurred on the server'
-        : message
+        : message,
     });
 });
 
