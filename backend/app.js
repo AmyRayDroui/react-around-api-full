@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 const { celebrate, Joi, errors } = require('celebrate');
 
+const NotFoundError = require('./errors/not-found-err');
+
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middleware/auth');
@@ -48,10 +50,8 @@ app.use(auth);
 
 app.use('/cards', cardsRoute);
 app.use('/users', usersRoute);
-app.get('/:extra', (req, res) => {
-  res.status(404);
-  res.setHeader('Content-Type', 'application/json');
-  res.send({ message: 'Requested resource not found' });
+app.get('/', () => {
+  throw new NotFoundError('Requested resource not found');
 });
 
 app.use(errorLogger);
